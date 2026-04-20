@@ -1,89 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Admin Torcida</title>
-
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#000;
-  color:white;
-}
-
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
-}
-
-.box{
-  background:#111;
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:20px;
-}
-
-input, textarea{
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  border-radius:8px;
-  border:none;
-}
-
-button{
-  margin-top:10px;
-  padding:10px;
-  background:white;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h2>🧑‍💼 Painel Admin</h2>
-
-<!-- NOTÍCIAS -->
-<div class="box">
-  <h3>📰 Criar Notícia</h3>
-  <input id="tituloN" placeholder="Título">
-  <textarea id="textoN" placeholder="Texto da notícia"></textarea>
-  <button onclick="addNoticia()">Publicar Notícia</button>
-</div>
-
-<!-- EVENTOS -->
-<div class="box">
-  <h3>📅 Criar Evento</h3>
-  <input id="tituloE" placeholder="Título">
-  <textarea id="textoE" placeholder="Descrição do evento"></textarea>
-  <button onclick="addEvento()">Publicar Evento</button>
-</div>
-
-</div>
-
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "SUA_KEY",
-  authDomain: "SEU_AUTH",
-  projectId: "SEU_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-/* NOTÍCIA */
 function addNoticia(){
   db.collection("noticias").add({
     titulo: tituloN.value,
@@ -92,11 +11,8 @@ function addNoticia(){
   });
 
   alert("Notícia publicada!");
-  tituloN.value="";
-  textoN.value="";
 }
 
-/* EVENTO */
 function addEvento(){
   db.collection("eventos").add({
     titulo: tituloE.value,
@@ -105,10 +21,5 @@ function addEvento(){
   });
 
   alert("Evento publicado!");
-  tituloE.value="";
-  textoE.value="";
 }
 </script>
-
-</body>
-</html>
