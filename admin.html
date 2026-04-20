@@ -1,25 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+
+<style>
+body{background:#000;color:#fff;font-family:Arial;}
+.container{max-width:600px;margin:auto;padding:20px;}
+input,textarea{width:100%;padding:10px;margin:5px 0;}
+button{padding:10px;background:#fff;border:none;cursor:pointer;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Admin</h2>
+
+<h3>Notícia</h3>
+<input id="tituloN" placeholder="Título">
+<textarea id="textoN" placeholder="Texto"></textarea>
+<button onclick="addNoticia()">Publicar Notícia</button>
+
+<hr>
+
+<h3>Evento</h3>
+<input id="tituloE" placeholder="Título">
+<textarea id="textoE" placeholder="Descrição"></textarea>
+<button onclick="addEvento()">Publicar Evento</button>
+
+</div>
+
+<!-- FIREBASE (SEQUÊNCIA CORRETA) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="firebase.js"></script>
 
 <script>
+const firebaseConfig = {
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_AUTH_DOMAIN",
+  projectId: "SEU_PROJECT_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* NOTÍCIAS */
 function addNoticia(){
   db.collection("noticias").add({
-    titulo: tituloN.value,
-    texto: textoN.value,
+    titulo: document.getElementById("tituloN").value,
+    texto: document.getElementById("textoN").value,
     data: new Date()
+  }).then(()=>{
+    alert("Notícia publicada!");
+  }).catch(err=>{
+    alert("Erro: " + err.message);
   });
-
-  alert("Notícia publicada!");
 }
 
+/* EVENTOS */
 function addEvento(){
   db.collection("eventos").add({
-    titulo: tituloE.value,
-    texto: textoE.value,
+    titulo: document.getElementById("tituloE").value,
+    texto: document.getElementById("textoE").value,
     data: new Date()
+  }).then(()=>{
+    alert("Evento publicado!");
+  }).catch(err=>{
+    alert("Erro: " + err.message);
   });
-
-  alert("Evento publicado!");
 }
 </script>
+
+</body>
+</html>
