@@ -1,1 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel Admin - Sócios</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: Poppins;
+    background: #0d0d0d;
+    color: white;
+}
+
+/* HEADER */
+header {
+    padding: 20px;
+    text-align: center;
+    background: #151515;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+/* FORM */
+form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+input, select {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+input {
+    flex: 1;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.add-btn {
+    background: white;
+    color: black;
+}
+
+/* LISTA */
+.card {
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #2a2a2a;
+}
+
+.status {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.active {
+    background: green;
+}
+
+.inactive {
+    background: red;
+}
+
+.actions button {
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+.edit {
+    background: orange;
+}
+
+.delete {
+    background: crimson;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    PAINEL ADMIN - SÓCIOS TORCIDA
+</header>
+
+<div class="container">
+
+<!-- FORM -->
+<form id="form">
+    <input type="text" id="name" placeholder="Nome do sócio" required>
+    
+    <select id="status">
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+    </select>
+
+    <button class="add-btn" type="submit">Adicionar</button>
+</form>
+
+<!-- LISTA -->
+<div id="list"></div>
+
+</div>
+
+<script>
+let socios = JSON.parse(localStorage.getItem("socios")) || [];
+
+const form = document.getElementById("form");
+const list = document.getElementById("list");
+
+function render() {
+    list.innerHTML = "";
+
+    socios.forEach((s, index) => {
+        list.innerHTML += `
+        <div class="card">
+            <div>
+                <strong>${s.nome}</strong><br>
+                <span class="status ${s.status}">
+                    ${s.status.toUpperCase()}
+                </span>
+            </div>
+
+            <div class="actions">
+                <button class="edit" onclick="toggle(${index})">Alterar</button>
+                <button class="delete" onclick="remove(${index})">Excluir</button>
+            </div>
+        </div>
+        `;
+    });
+
+    localStorage.setItem("socios", JSON.stringify(socios));
+}
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const nome = document.getElementById("name").value;
+    const status = document.getElementById("status").value;
+
+    socios.push({ nome, status });
+
+    form.reset();
+    render();
+});
+
+function toggle(i) {
+    socios[i].status = socios[i].status === "ativo" ? "inativo" : "ativo";
+    render();
+}
+
+function remove(i) {
+    socios.splice(i, 1);
+    render();
+}
+
+render();
+</script>
+
+</body>
+</html>
