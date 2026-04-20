@@ -2,95 +2,76 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Sócios</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<title>Admin Torcida</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#0b0f14;color:white;}
-header{background:#111827;padding:15px;}
-.container{padding:20px;max-width:1100px;margin:auto;}
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
+body{
+  margin:0;
+  font-family:Arial;
+  background:#000;
+  color:white;
 }
 
-.card{
-  background:#111827;
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.box{
+  background:#111;
   padding:15px;
   border-radius:10px;
+  margin-bottom:20px;
 }
 
-.form{
-  margin-top:20px;
-}
-
-input,select,button{
+input, textarea{
+  width:100%;
   padding:10px;
-  margin:5px;
+  margin-top:8px;
   border-radius:8px;
   border:none;
 }
 
-button{cursor:pointer;}
-.add{background:#22c55e;font-weight:bold;}
-
-.list{
-  margin-top:20px;
-}
-
-.item{
-  background:#111827;
-  padding:10px;
+button{
   margin-top:10px;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  padding:10px;
+  background:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
 }
-
-.ativo{color:lime;}
-.inativo{color:red;}
 </style>
 </head>
 
 <body>
 
-<header>📊 Dashboard Admin</header>
-
 <div class="container">
 
-<!-- CARDS -->
-<div class="cards">
-  <div class="card"><h3>Total</h3><p id="total">0</p></div>
-  <div class="card"><h3>Ativos</h3><p id="ativos">0</p></div>
-  <div class="card"><h3>Inativos</h3><p id="inativos">0</p></div>
+<h2>🧑‍💼 Painel Admin</h2>
+
+<!-- NOTÍCIAS -->
+<div class="box">
+  <h3>📰 Criar Notícia</h3>
+  <input id="tituloN" placeholder="Título">
+  <textarea id="textoN" placeholder="Texto da notícia"></textarea>
+  <button onclick="addNoticia()">Publicar Notícia</button>
 </div>
 
-<!-- FORM -->
-<div class="form">
-  <input id="nome" placeholder="Nome do sócio">
-  <select id="status">
-    <option value="ativo">Ativo</option>
-    <option value="inativo">Inativo</option>
-  </select>
-  <button class="add" onclick="add()">Adicionar</button>
+<!-- EVENTOS -->
+<div class="box">
+  <h3>📅 Criar Evento</h3>
+  <input id="tituloE" placeholder="Título">
+  <textarea id="textoE" placeholder="Descrição do evento"></textarea>
+  <button onclick="addEvento()">Publicar Evento</button>
 </div>
-
-<!-- GRÁFICO -->
-<canvas id="chart"></canvas>
-
-<!-- LISTA -->
-<div class="list" id="list"></div>
 
 </div>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -102,67 +83,31 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* ADD */
-async function add(){
-  const id = Date.now().toString();
-
-  await db.collection("socios").doc(id).set({
-    nome: nome.value,
-    status: status.value,
-    id
+/* NOTÍCIA */
+function addNoticia(){
+  db.collection("noticias").add({
+    titulo: tituloN.value,
+    texto: textoN.value,
+    data: new Date()
   });
 
-  load();
+  alert("Notícia publicada!");
+  tituloN.value="";
+  textoN.value="";
 }
 
-/* LOAD */
-async function load(){
-  const snap = await db.collection("socios").get();
-
-  let total=0, ativos=0, inativos=0;
-
-  list.innerHTML="";
-
-  snap.forEach(doc=>{
-    const s = doc.data();
-    total++;
-
-    if(s.status==="ativo") ativos++;
-    else inativos++;
-
-    list.innerHTML+=`
-    <div class="item">
-      <div>
-        <b>${s.nome}</b> - <span class="${s.status}">${s.status}</span>
-      </div>
-    </div>`;
+/* EVENTO */
+function addEvento(){
+  db.collection("eventos").add({
+    titulo: tituloE.value,
+    texto: textoE.value,
+    data: new Date()
   });
 
-  totalEl.innerText=total;
-  ativosEl.innerText=ativos;
-  inativosEl.innerText=inativos;
-
-  drawChart(ativos,inativos);
+  alert("Evento publicado!");
+  tituloE.value="";
+  textoE.value="";
 }
-
-/* GRAFICO */
-let chart;
-
-function drawChart(a,i){
-  const ctx=document.getElementById("chart");
-
-  if(chart) chart.destroy();
-
-  chart=new Chart(ctx,{
-    type:"doughnut",
-    data:{
-      labels:["Ativos","Inativos"],
-      datasets:[{data:[a,i]}]
-    }
-  });
-}
-
-load();
 </script>
 
 </body>
