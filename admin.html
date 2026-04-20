@@ -3,56 +3,122 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Admin - Sócios</title>
+<title>Dashboard Sócios</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <style>
-body {
+* {
     margin: 0;
-    font-family: Poppins;
-    background: #0b0f14;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Inter;
+}
+
+body {
+    background: #0a0f1c;
+    color: #fff;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: #0f172a;
+    padding: 20px;
+    border-right: 1px solid #1e293b;
+}
+
+.sidebar h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu div {
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #cbd5e1;
+}
+
+.menu div:hover {
+    background: #1e293b;
     color: white;
 }
 
-header {
-    background: #111827;
-    padding: 18px;
-    font-weight: 700;
-    text-align: center;
+/* MAIN */
+.main {
+    flex: 1;
+    padding: 20px;
 }
 
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 20px;
+}
+
+/* STATS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    background: #111827;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #1f2937;
+}
+
+.card h3 {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.card p {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 5px;
 }
 
 /* FORM */
 .form {
-    display: grid;
-    grid-template-columns: 1fr 150px 120px;
+    margin-top: 20px;
+    display: flex;
     gap: 10px;
-    margin-bottom: 20px;
 }
 
 input, select {
-    padding: 12px;
-    border-radius: 10px;
+    padding: 10px;
+    border-radius: 8px;
     border: none;
-    outline: none;
     background: #1f2937;
     color: white;
 }
 
 button {
+    padding: 10px 15px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
-    padding: 10px;
 }
 
 .add {
@@ -60,100 +126,119 @@ button {
     color: black;
 }
 
-/* CARDS */
-.card {
+/* LISTA */
+.list {
+    margin-top: 20px;
+    display: grid;
+    gap: 10px;
+}
+
+.item {
     background: #111827;
-    border: 1px solid #1f2937;
     padding: 15px;
     border-radius: 12px;
-    margin-top: 10px;
+    border: 1px solid #1f2937;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .status {
     font-size: 12px;
     padding: 4px 10px;
     border-radius: 20px;
-    display: inline-block;
-    margin-top: 5px;
 }
 
-.ativo {
-    background: #16a34a;
-}
+.ativo { background: #16a34a; }
+.inativo { background: #dc2626; }
 
-.inativo {
-    background: #dc2626;
-}
-
-/* BOTÕES */
 .actions button {
-    margin-right: 5px;
-    padding: 6px 10px;
+    margin-left: 5px;
     font-size: 12px;
+    padding: 6px 10px;
 }
 
 .edit { background: #f59e0b; }
 .del { background: #ef4444; color: white; }
 
-/* QR */
-.qr {
-    margin-top: 10px;
-    background: white;
-    padding: 5px;
-    border-radius: 8px;
-    width: fit-content;
+.qr canvas {
+    width: 60px !important;
+    height: 60px !important;
 }
 </style>
 </head>
 
 <body>
 
-<header>📊 Painel Admin - Sistema de Sócios</header>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>📊 Admin</h2>
 
-<div class="container">
+    <div class="menu">
+        <div>Dashboard</div>
+        <div>Sócios</div>
+        <div>QR Codes</div>
+        <div>Configurações</div>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+    <h1>Dashboard de Sócios</h1>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+    <div class="card">
+        <h3>Total</h3>
+        <p id="total">0</p>
+    </div>
+
+    <div class="card">
+        <h3>Ativos</h3>
+        <p id="ativos">0</p>
+    </div>
+
+    <div class="card">
+        <h3>Inativos</h3>
+        <p id="inativos">0</p>
+    </div>
+</div>
 
 <!-- FORM -->
 <div class="form">
     <input id="nome" placeholder="Nome do sócio">
-    
     <select id="status">
         <option value="ativo">Ativo</option>
         <option value="inativo">Inativo</option>
     </select>
-
-    <button class="add" onclick="addSocio()">Adicionar</button>
+    <button class="add" onclick="add()">Adicionar</button>
 </div>
 
 <!-- LISTA -->
-<div id="lista"></div>
+<div class="list" id="list"></div>
 
 </div>
 
-<!-- FIREBASE (COMPAT) -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-// 🔥 CONFIG FIREBASE (SEU PROJETO)
 const firebaseConfig = {
   apiKey: "AIzaSyA8C54l6VG9PBugdhLOrMlA3bG3Cl2zd8Y",
   authDomain: "email-senha-s.firebaseapp.com",
-  projectId: "email-senha-s",
-  storageBucket: "email-s.firebaseapp.com",
-  messagingSenderId: "869892914784",
-  appId: "1:869892914784:web:75b37a7e877ed7b0d94d05"
+  projectId: "email-senha-s"
 };
 
-// INIT
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ➕ ADICIONAR SÓCIO
-async function addSocio(){
+async function add(){
     const nome = document.getElementById("nome").value;
     const status = document.getElementById("status").value;
-
-    if(!nome) return alert("Digite um nome");
 
     const id = Date.now().toString();
 
@@ -163,64 +248,68 @@ async function addSocio(){
         id
     });
 
-    document.getElementById("nome").value = "";
-
-    loadSocios();
+    load();
 }
 
-// 📥 LISTAR
-async function loadSocios(){
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
+async function load(){
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    let total = 0, ativos = 0, inativos = 0;
 
     const snap = await db.collection("socios").get();
 
     snap.forEach(doc => {
         const s = doc.data();
 
-        const link = `${window.location.origin}/socio.html?id=${s.id}`;
+        total++;
+        if(s.status === "ativo") ativos++;
+        else inativos++;
 
         const div = document.createElement("div");
-        div.className = "card";
+        div.className = "item";
 
         div.innerHTML = `
-            <b>${s.nome}</b><br>
-            <span class="status ${s.status}">${s.status.toUpperCase()}</span><br>
-
-            <button class="edit" onclick="toggle('${s.id}','${s.status}')">Alterar</button>
-            <button class="del" onclick="del('${s.id}')">Excluir</button>
+            <div>
+                <b>${s.nome}</b><br>
+                <span class="status ${s.status}">${s.status}</span>
+            </div>
 
             <div class="qr" id="qr-${s.id}"></div>
+
+            <div class="actions">
+                <button class="edit" onclick="toggle('${s.id}','${s.status}')">Alterar</button>
+                <button class="del" onclick="del('${s.id}')">Excluir</button>
+            </div>
         `;
 
-        lista.appendChild(div);
+        list.appendChild(div);
 
-        // QR CODE
-        const qrContainer = document.getElementById(`qr-${s.id}`);
+        const link = `${window.location.origin}/socio.html?id=${s.id}`;
 
         QRCode.toCanvas(document.createElement("canvas"), link, function (err, canvas) {
-            qrContainer.appendChild(canvas);
+            document.getElementById(`qr-${s.id}`).appendChild(canvas);
         });
     });
+
+    document.getElementById("total").innerText = total;
+    document.getElementById("ativos").innerText = ativos;
+    document.getElementById("inativos").innerText = inativos;
 }
 
-// 🔁 TOGGLE STATUS
 async function toggle(id, status){
     await db.collection("socios").doc(id).update({
         status: status === "ativo" ? "inativo" : "ativo"
     });
-
-    loadSocios();
+    load();
 }
 
-// ❌ DELETE
 async function del(id){
     await db.collection("socios").doc(id).delete();
-    loadSocios();
+    load();
 }
 
-// INIT
-loadSocios();
+load();
 </script>
 
 </body>
