@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal da Torcida</title>
+<title>Portal da Baixada</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -15,11 +15,13 @@ body {
   background: radial-gradient(circle at top, #111, #000);
 }
 
+/* HEADER */
 header {
   background: rgba(0,0,0,0.8);
   padding: 15px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 nav a {
@@ -28,21 +30,27 @@ nav a {
   text-decoration: none;
 }
 
-nav a:hover { color: #fff; }
+nav a:hover {
+  color: #fff;
+}
 
+/* HERO */
 .hero {
   text-align: center;
   padding: 60px 20px;
 }
 
 .hero h1 {
-  font-size: 30px;
+  font-size: 34px;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
 }
 
 .hero p {
   color: #aaa;
 }
 
+/* CARDS */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
@@ -66,26 +74,36 @@ button {
   border: none;
   cursor: pointer;
   font-weight: bold;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
 }
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <header>
-  <div><b>🏟 Torcida Oficial</b></div>
+  <div><b>🏟 2° CANIL BAIXADA</b></div>
+
   <nav>
     <a href="index.html">Início</a>
     <a href="noticias.html">Notícias</a>
     <a href="eventos.html">Eventos</a>
+    <a href="admin.html">Admin</a>
   </nav>
 </header>
 
+<!-- HERO -->
 <div class="hero">
-  <h1>Portal Oficial da Torcida</h1>
+  <h1>PORTAL DA BAIXADA</h1>
   <p>História, união e paixão pelo clube</p>
 </div>
 
+<!-- CARDS -->
 <div class="grid">
 
   <div class="card">
