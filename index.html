@@ -2,64 +2,118 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Sócio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal da Torcida</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
 body{
+  margin:0;
+  font-family:Poppins;
   background:#0b0f14;
   color:white;
-  font-family:Arial;
-  text-align:center;
 }
-.card{
-  margin-top:80px;
+
+/* HEADER */
+header{
   background:#111827;
   padding:20px;
-  border-radius:12px;
-  display:inline-block;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-.ativo{color:lime;}
-.inativo{color:red;}
+
+nav a{
+  color:#cbd5e1;
+  margin-left:15px;
+  text-decoration:none;
+}
+
+nav a:hover{color:white;}
+
+/* HERO */
+.hero{
+  text-align:center;
+  padding:60px 20px;
+}
+
+.hero h1{
+  font-size:32px;
+}
+
+.hero p{
+  color:#94a3b8;
+}
+
+/* CARDS */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:15px;
+  padding:20px;
+}
+
+.card{
+  background:#111827;
+  padding:15px;
+  border-radius:12px;
+  border:1px solid #1f2937;
+}
+
+.card h3{
+  margin-top:0;
+}
+
+button{
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:#22c55e;
+  font-weight:bold;
+}
 </style>
 </head>
 
 <body>
 
-<div class="card" id="info">Carregando...</div>
+<header>
+  <div><b>🏟 Torcida Oficial</b></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="noticias.html">Notícias</a>
+    <a href="eventos.html">Eventos</a>
+  </nav>
+</header>
 
-<script>
-const firebaseConfig = {
-  apiKey: "SUA_KEY",
-  authDomain: "SEU_AUTH",
-  projectId: "SEU_ID"
-};
+<div class="hero">
+  <h1>Bem-vindo ao Portal da Torcida</h1>
+  <p>História, paixão e união em cada jogo</p>
+</div>
 
-firebase.initializeApp(firebaseConfig);
-const db=firebase.firestore();
+<div class="grid">
 
-const id=new URLSearchParams(location.search).get("id");
+  <div class="card">
+    <h3>📰 Notícias</h3>
+    <p>Fique por dentro das últimas novidades da torcida.</p>
+    <button onclick="location.href='noticias.html'">Acessar</button>
+  </div>
 
-async function load(){
-  const doc=await db.collection("socios").doc(id).get();
+  <div class="card">
+    <h3>📅 Eventos</h3>
+    <p>Viagens, encontros e jogos oficiais.</p>
+    <button onclick="location.href='eventos.html'">Ver eventos</button>
+  </div>
 
-  if(!doc.exists){
-    info.innerHTML="Não encontrado";
-    return;
-  }
+  <div class="card">
+    <h3>👤 Sócio</h3>
+    <p>Acesse sua carteirinha digital.</p>
+    <button onclick="location.href='socio.html?id=SEU_ID'">Entrar</button>
+  </div>
 
-  const s=doc.data();
-
-  info.innerHTML=`
-    <h2>${s.nome}</h2>
-    <h3 class="${s.status}">${s.status.toUpperCase()}</h3>
-  `;
-}
-
-load();
-</script>
+</div>
 
 </body>
 </html>
