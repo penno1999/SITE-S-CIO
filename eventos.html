@@ -8,48 +8,62 @@
 body{
   margin:0;
   font-family:Arial;
-  background:#0b0f14;
+  background:#000;
   color:white;
 }
 
-header{
-  background:#111827;
-  padding:15px;
-}
-
 .container{
-  padding:20px;
   max-width:800px;
   margin:auto;
+  padding:20px;
 }
 
-.event{
-  background:#111827;
+.card{
+  background:#111;
   padding:15px;
-  border-radius:12px;
   margin-bottom:10px;
-  border:1px solid #1f2937;
+  border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<header>📅 Eventos da Torcida</header>
-
 <div class="container">
-
-  <div class="event">
-    <h3>Jogo Fora de Casa</h3>
-    <p>Data: 25/05 - Transporte organizado para sócios.</p>
-  </div>
-
-  <div class="event">
-    <h3>Confraternização</h3>
-    <p>Encontro oficial dos membros da torcida.</p>
-  </div>
-
+  <h2>📅 Eventos</h2>
+  <div id="list"></div>
 </div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "SUA_KEY",
+  authDomain: "SEU_AUTH",
+  projectId: "SEU_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+async function load(){
+  const snap = await db.collection("eventos").orderBy("data","desc").get();
+
+  snap.forEach(doc=>{
+    const e = doc.data();
+
+    list.innerHTML += `
+      <div class="card">
+        <h3>${e.titulo}</h3>
+        <p>${e.texto}</p>
+      </div>
+    `;
+  });
+}
+
+load();
+</script>
 
 </body>
 </html>
