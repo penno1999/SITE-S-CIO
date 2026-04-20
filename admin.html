@@ -2,149 +2,225 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Painel Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Admin - Sócios</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <style>
 body {
     margin: 0;
     font-family: Poppins;
-    background: #0d0d0d;
+    background: #0b0f14;
     color: white;
 }
 
 header {
-    padding: 20px;
+    background: #111827;
+    padding: 18px;
+    font-weight: 700;
     text-align: center;
-    background: #151515;
-    font-weight: 800;
 }
 
 .container {
-    max-width: 900px;
-    margin: 20px auto;
+    max-width: 1000px;
+    margin: auto;
     padding: 20px;
 }
 
-form {
-    display: flex;
+/* FORM */
+.form {
+    display: grid;
+    grid-template-columns: 1fr 150px 120px;
     gap: 10px;
-    flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
 input, select {
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     border: none;
+    outline: none;
+    background: #1f2937;
+    color: white;
 }
 
 button {
-    padding: 10px;
-    border-radius: 8px;
     border: none;
-    background: white;
-    font-weight: bold;
+    border-radius: 10px;
     cursor: pointer;
+    font-weight: bold;
+    padding: 10px;
 }
 
+.add {
+    background: #22c55e;
+    color: black;
+}
+
+/* CARDS */
 .card {
-    background: #1a1a1a;
-    margin-top: 10px;
+    background: #111827;
+    border: 1px solid #1f2937;
     padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
+    border-radius: 12px;
+    margin-top: 10px;
 }
 
 .status {
     font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 5px;
 }
 
-.ativo { background: green; }
-.inativo { background: red; }
+.ativo {
+    background: #16a34a;
+}
 
+.inativo {
+    background: #dc2626;
+}
+
+/* BOTÕES */
 .actions button {
-    margin-left: 5px;
+    margin-right: 5px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.edit { background: #f59e0b; }
+.del { background: #ef4444; color: white; }
+
+/* QR */
+.qr {
+    margin-top: 10px;
+    background: white;
+    padding: 5px;
+    border-radius: 8px;
+    width: fit-content;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-PAINEL ADMIN
-</header>
+<header>📊 Painel Admin - Sistema de Sócios</header>
 
 <div class="container">
 
-<form id="form">
+<!-- FORM -->
+<div class="form">
     <input id="nome" placeholder="Nome do sócio">
+    
     <select id="status">
         <option value="ativo">Ativo</option>
         <option value="inativo">Inativo</option>
     </select>
-    <button>Adicionar</button>
-</form>
 
+    <button class="add" onclick="addSocio()">Adicionar</button>
+</div>
+
+<!-- LISTA -->
 <div id="lista"></div>
 
 </div>
 
-<script src="data.js"></script>
+<!-- FIREBASE (COMPAT) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-const form = document.getElementById("form");
-const lista = document.getElementById("lista");
+// 🔥 CONFIG FIREBASE (SEU PROJETO)
+const firebaseConfig = {
+  apiKey: "AIzaSyA8C54l6VG9PBugdhLOrMlA3bG3Cl2zd8Y",
+  authDomain: "email-senha-s.firebaseapp.com",
+  projectId: "email-senha-s",
+  storageBucket: "email-s.firebaseapp.com",
+  messagingSenderId: "869892914784",
+  appId: "1:869892914784:web:75b37a7e877ed7b0d94d05"
+};
 
-function render() {
+// INIT
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ➕ ADICIONAR SÓCIO
+async function addSocio(){
+    const nome = document.getElementById("nome").value;
+    const status = document.getElementById("status").value;
+
+    if(!nome) return alert("Digite um nome");
+
+    const id = Date.now().toString();
+
+    await db.collection("socios").doc(id).set({
+        nome,
+        status,
+        id
+    });
+
+    document.getElementById("nome").value = "";
+
+    loadSocios();
+}
+
+// 📥 LISTAR
+async function loadSocios(){
+    const lista = document.getElementById("lista");
     lista.innerHTML = "";
 
-    socios.forEach((s, i) => {
-        lista.innerHTML += `
-        <div class="card">
-            <div>
-                <strong>${s.nome}</strong><br>
-                <span class="status ${s.status}">${s.status}</span>
-            </div>
+    const snap = await db.collection("socios").get();
 
-            <div class="actions">
-                <button onclick="toggle(${i})">Alterar</button>
-                <button onclick="del(${i})">Excluir</button>
-            </div>
-        </div>
+    snap.forEach(doc => {
+        const s = doc.data();
+
+        const link = `${window.location.origin}/socio.html?id=${s.id}`;
+
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+            <b>${s.nome}</b><br>
+            <span class="status ${s.status}">${s.status.toUpperCase()}</span><br>
+
+            <button class="edit" onclick="toggle('${s.id}','${s.status}')">Alterar</button>
+            <button class="del" onclick="del('${s.id}')">Excluir</button>
+
+            <div class="qr" id="qr-${s.id}"></div>
         `;
+
+        lista.appendChild(div);
+
+        // QR CODE
+        const qrContainer = document.getElementById(`qr-${s.id}`);
+
+        QRCode.toCanvas(document.createElement("canvas"), link, function (err, canvas) {
+            qrContainer.appendChild(canvas);
+        });
+    });
+}
+
+// 🔁 TOGGLE STATUS
+async function toggle(id, status){
+    await db.collection("socios").doc(id).update({
+        status: status === "ativo" ? "inativo" : "ativo"
     });
 
-    localStorage.setItem("socios", JSON.stringify(socios));
+    loadSocios();
 }
 
-form.addEventListener("submit", e => {
-    e.preventDefault();
-
-    socios.push({
-        nome: document.getElementById("nome").value,
-        status: document.getElementById("status").value
-    });
-
-    form.reset();
-    render();
-});
-
-function toggle(i) {
-    socios[i].status = socios[i].status === "ativo" ? "inativo" : "ativo";
-    render();
+// ❌ DELETE
+async function del(id){
+    await db.collection("socios").doc(id).delete();
+    loadSocios();
 }
 
-function del(i) {
-    socios.splice(i, 1);
-    render();
-}
-
-render();
+// INIT
+loadSocios();
 </script>
 
 </body>
