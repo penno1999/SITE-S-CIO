@@ -2,311 +2,164 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Sócios</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Inter;
+body{margin:0;font-family:Arial;background:#0b0f14;color:white;}
+header{background:#111827;padding:15px;}
+.container{padding:20px;max-width:1100px;margin:auto;}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
 }
 
-body {
-    background: #0a0f1c;
-    color: #fff;
-    display: flex;
-    min-height: 100vh;
+.card{
+  background:#111827;
+  padding:15px;
+  border-radius:10px;
 }
 
-/* SIDEBAR */
-.sidebar {
-    width: 240px;
-    background: #0f172a;
-    padding: 20px;
-    border-right: 1px solid #1e293b;
+.form{
+  margin-top:20px;
 }
 
-.sidebar h2 {
-    font-size: 18px;
-    margin-bottom: 20px;
+input,select,button{
+  padding:10px;
+  margin:5px;
+  border-radius:8px;
+  border:none;
 }
 
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+button{cursor:pointer;}
+.add{background:#22c55e;font-weight:bold;}
+
+.list{
+  margin-top:20px;
 }
 
-.menu div {
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: #cbd5e1;
+.item{
+  background:#111827;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.menu div:hover {
-    background: #1e293b;
-    color: white;
-}
-
-/* MAIN */
-.main {
-    flex: 1;
-    padding: 20px;
-}
-
-/* HEADER */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header h1 {
-    font-size: 20px;
-}
-
-/* STATS */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.card {
-    background: #111827;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #1f2937;
-}
-
-.card h3 {
-    font-size: 14px;
-    color: #94a3b8;
-}
-
-.card p {
-    font-size: 22px;
-    font-weight: bold;
-    margin-top: 5px;
-}
-
-/* FORM */
-.form {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-}
-
-input, select {
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: #1f2937;
-    color: white;
-}
-
-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.add {
-    background: #22c55e;
-    color: black;
-}
-
-/* LISTA */
-.list {
-    margin-top: 20px;
-    display: grid;
-    gap: 10px;
-}
-
-.item {
-    background: #111827;
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #1f2937;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.status {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 20px;
-}
-
-.ativo { background: #16a34a; }
-.inativo { background: #dc2626; }
-
-.actions button {
-    margin-left: 5px;
-    font-size: 12px;
-    padding: 6px 10px;
-}
-
-.edit { background: #f59e0b; }
-.del { background: #ef4444; color: white; }
-
-.qr canvas {
-    width: 60px !important;
-    height: 60px !important;
-}
+.ativo{color:lime;}
+.inativo{color:red;}
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h2>📊 Admin</h2>
+<header>📊 Dashboard Admin</header>
 
-    <div class="menu">
-        <div>Dashboard</div>
-        <div>Sócios</div>
-        <div>QR Codes</div>
-        <div>Configurações</div>
-    </div>
-</div>
+<div class="container">
 
-<!-- MAIN -->
-<div class="main">
-
-<div class="header">
-    <h1>Dashboard de Sócios</h1>
-</div>
-
-<!-- STATS -->
-<div class="stats">
-    <div class="card">
-        <h3>Total</h3>
-        <p id="total">0</p>
-    </div>
-
-    <div class="card">
-        <h3>Ativos</h3>
-        <p id="ativos">0</p>
-    </div>
-
-    <div class="card">
-        <h3>Inativos</h3>
-        <p id="inativos">0</p>
-    </div>
+<!-- CARDS -->
+<div class="cards">
+  <div class="card"><h3>Total</h3><p id="total">0</p></div>
+  <div class="card"><h3>Ativos</h3><p id="ativos">0</p></div>
+  <div class="card"><h3>Inativos</h3><p id="inativos">0</p></div>
 </div>
 
 <!-- FORM -->
 <div class="form">
-    <input id="nome" placeholder="Nome do sócio">
-    <select id="status">
-        <option value="ativo">Ativo</option>
-        <option value="inativo">Inativo</option>
-    </select>
-    <button class="add" onclick="add()">Adicionar</button>
+  <input id="nome" placeholder="Nome do sócio">
+  <select id="status">
+    <option value="ativo">Ativo</option>
+    <option value="inativo">Inativo</option>
+  </select>
+  <button class="add" onclick="add()">Adicionar</button>
 </div>
+
+<!-- GRÁFICO -->
+<canvas id="chart"></canvas>
 
 <!-- LISTA -->
 <div class="list" id="list"></div>
 
 </div>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyA8C54l6VG9PBugdhLOrMlA3bG3Cl2zd8Y",
-  authDomain: "email-senha-s.firebaseapp.com",
-  projectId: "email-senha-s"
+  apiKey: "SUA_KEY",
+  authDomain: "SEU_AUTH",
+  projectId: "SEU_ID"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+/* ADD */
 async function add(){
-    const nome = document.getElementById("nome").value;
-    const status = document.getElementById("status").value;
+  const id = Date.now().toString();
 
-    const id = Date.now().toString();
+  await db.collection("socios").doc(id).set({
+    nome: nome.value,
+    status: status.value,
+    id
+  });
 
-    await db.collection("socios").doc(id).set({
-        nome,
-        status,
-        id
-    });
-
-    load();
+  load();
 }
 
+/* LOAD */
 async function load(){
-    const list = document.getElementById("list");
-    list.innerHTML = "";
+  const snap = await db.collection("socios").get();
 
-    let total = 0, ativos = 0, inativos = 0;
+  let total=0, ativos=0, inativos=0;
 
-    const snap = await db.collection("socios").get();
+  list.innerHTML="";
 
-    snap.forEach(doc => {
-        const s = doc.data();
+  snap.forEach(doc=>{
+    const s = doc.data();
+    total++;
 
-        total++;
-        if(s.status === "ativo") ativos++;
-        else inativos++;
+    if(s.status==="ativo") ativos++;
+    else inativos++;
 
-        const div = document.createElement("div");
-        div.className = "item";
+    list.innerHTML+=`
+    <div class="item">
+      <div>
+        <b>${s.nome}</b> - <span class="${s.status}">${s.status}</span>
+      </div>
+    </div>`;
+  });
 
-        div.innerHTML = `
-            <div>
-                <b>${s.nome}</b><br>
-                <span class="status ${s.status}">${s.status}</span>
-            </div>
+  totalEl.innerText=total;
+  ativosEl.innerText=ativos;
+  inativosEl.innerText=inativos;
 
-            <div class="qr" id="qr-${s.id}"></div>
-
-            <div class="actions">
-                <button class="edit" onclick="toggle('${s.id}','${s.status}')">Alterar</button>
-                <button class="del" onclick="del('${s.id}')">Excluir</button>
-            </div>
-        `;
-
-        list.appendChild(div);
-
-        const link = `${window.location.origin}/socio.html?id=${s.id}`;
-
-        QRCode.toCanvas(document.createElement("canvas"), link, function (err, canvas) {
-            document.getElementById(`qr-${s.id}`).appendChild(canvas);
-        });
-    });
-
-    document.getElementById("total").innerText = total;
-    document.getElementById("ativos").innerText = ativos;
-    document.getElementById("inativos").innerText = inativos;
+  drawChart(ativos,inativos);
 }
 
-async function toggle(id, status){
-    await db.collection("socios").doc(id).update({
-        status: status === "ativo" ? "inativo" : "ativo"
-    });
-    load();
-}
+/* GRAFICO */
+let chart;
 
-async function del(id){
-    await db.collection("socios").doc(id).delete();
-    load();
+function drawChart(a,i){
+  const ctx=document.getElementById("chart");
+
+  if(chart) chart.destroy();
+
+  chart=new Chart(ctx,{
+    type:"doughnut",
+    data:{
+      labels:["Ativos","Inativos"],
+      datasets:[{data:[a,i]}]
+    }
+  });
 }
 
 load();
