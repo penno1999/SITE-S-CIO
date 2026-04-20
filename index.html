@@ -2,104 +2,63 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consulta de Sócio</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<title>Sócio</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Poppins;
-    background: #0b0b0b;
-    color: white;
-    text-align: center;
+body{
+  background:#0b0f14;
+  color:white;
+  font-family:Arial;
+  text-align:center;
 }
-
-header {
-    padding: 25px;
-    background: #151515;
-    font-weight: 800;
+.card{
+  margin-top:80px;
+  background:#111827;
+  padding:20px;
+  border-radius:12px;
+  display:inline-block;
 }
-
-.container {
-    margin-top: 40px;
-}
-
-input {
-    padding: 12px;
-    width: 250px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-}
-
-button {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.card {
-    margin: 30px auto;
-    max-width: 350px;
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #333;
-}
-
-.status {
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.ativo { color: limegreen; }
-.inativo { color: red; }
+.ativo{color:lime;}
+.inativo{color:red;}
 </style>
 </head>
 
 <body>
 
-<header>
-    CONSULTA DE SÓCIO
-</header>
+<div class="card" id="info">Carregando...</div>
 
-<div class="container">
-
-<input id="busca" placeholder="Digite o nome ou ID">
-<button onclick="buscar()">Consultar</button>
-
-<div id="resultado"></div>
-
-</div>
-
-<script src="data.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-function buscar() {
-    let valor = document.getElementById("busca").value.toLowerCase();
-    let res = document.getElementById("resultado");
+const firebaseConfig = {
+  apiKey: "SUA_KEY",
+  authDomain: "SEU_AUTH",
+  projectId: "SEU_ID"
+};
 
-    let socio = socios.find(s => s.nome.toLowerCase().includes(valor));
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
 
-    if (!socio) {
-        res.innerHTML = "<p>❌ Sócio não encontrado</p>";
-        return;
-    }
+const id=new URLSearchParams(location.search).get("id");
 
-    res.innerHTML = `
-    <div class="card">
-        <h3>${socio.nome}</h3>
-        <div class="status ${socio.status}">
-            ${socio.status.toUpperCase()}
-        </div>
-    </div>
-    `;
+async function load(){
+  const doc=await db.collection("socios").doc(id).get();
+
+  if(!doc.exists){
+    info.innerHTML="Não encontrado";
+    return;
+  }
+
+  const s=doc.data();
+
+  info.innerHTML=`
+    <h2>${s.nome}</h2>
+    <h3 class="${s.status}">${s.status.toUpperCase()}</h3>
+  `;
 }
+
+load();
 </script>
 
 </body>
