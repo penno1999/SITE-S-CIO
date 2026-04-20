@@ -1,55 +1,11 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Eventos</title>
-
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#000;
-  color:white;
-}
-
-.container{
-  max-width:800px;
-  margin:auto;
-  padding:20px;
-}
-
-.card{
-  background:#111;
-  padding:15px;
-  margin-bottom:10px;
-  border-radius:10px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-  <h2>📅 Eventos</h2>
-  <div id="list"></div>
-</div>
-
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "SUA_KEY",
-  authDomain: "SEU_AUTH",
-  projectId: "SEU_ID"
-};
+const list = document.getElementById("list");
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-async function load(){
-  const snap = await db.collection("eventos").orderBy("data","desc").get();
-
+db.collection("eventos").get().then(snap=>{
   snap.forEach(doc=>{
     const e = doc.data();
 
@@ -60,10 +16,5 @@ async function load(){
       </div>
     `;
   });
-}
-
-load();
+});
 </script>
-
-</body>
-</html>
